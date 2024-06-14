@@ -30,7 +30,6 @@ public class AuthController {
     @GetMapping("/oauth2/start")
     public void start2(HttpServletResponse response) throws IOException {
         String loginId = "20211149@sungshin.ac.kr";
-        //String loginId = "loginId";
         long expireTimeMs = 3600000;
 
         String token = jwtTokenUtil.createToken(loginId, expireTimeMs);
