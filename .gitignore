@@ -38,3 +38,6 @@ out/
 
 k8s/
 *.tar
+
+### DS_Store ###
+.DS_Store
