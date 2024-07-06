@@ -5,10 +5,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+
 
 public class JwtTokenFilter extends OncePerRequestFilter{
 
@@ -23,23 +21,18 @@ public class JwtTokenFilter extends OncePerRequestFilter{
 
         String originalUri = request.getHeader("X-Original-URI");
 
-        //인증이 필요없을 경우 그냥 보내줌
+        //인증이 필요없을 경우
         if (originalUri != null && !originalUri.contains("/auth")) {
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("text/plain");
-            response.getWriter().write(originalUri);
+            filterChain.doFilter(request, response);
             return;
         }
 
         String token = request.getHeader("Authorization");
 
-        System.out.println("Original token: " + token);
-        System.out.println("Original Path: " + originalUri);
-
-        // Header의 Authorization의 값이 비어있으면 오류
+        // Header의 Authorization의 값이 비어있거나 Bearer 로 시작하지 않으면 오류
         if (token == null || !token.startsWith("Bearer ")) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Invalid Token1");
+            response.getWriter().write("Invalid Token");
             return;
         }
 
@@ -47,7 +40,7 @@ public class JwtTokenFilter extends OncePerRequestFilter{
         // 전송받은 Jwt Token이 만료되었으면 오류
         if (jwtTokenUtil.isExpired(jwtToken)) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Invalid Token1");
+            response.getWriter().write("Invalid Token");
             return;
         }
 
@@ -56,10 +49,8 @@ public class JwtTokenFilter extends OncePerRequestFilter{
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("text/plain");
         response.setHeader("X-Authoization-Id", loginId);
-        response.getWriter().write("success");
-        return;
 
-        //filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response);
     }
 
 }
