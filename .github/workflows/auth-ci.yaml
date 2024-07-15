@@ -34,5 +34,5 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_NAME }}/auth10:latest .
-          docker push ${{ secrets.DOCKERHUB_NAME }}/auth10:latest
+          docker build -t ${{ secrets.DOCKERHUB_NAME }}/msa-auth:24.07.04 .
+          docker push ${{ secrets.DOCKERHUB_NAME }}/msa-auth:24.07.04
